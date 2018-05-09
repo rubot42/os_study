@@ -108,6 +108,31 @@ CPU Utilization = 1-p^n
 p = waiting time for I/O
 n = number of processes
 ## System calls
+System calls are how processes communicate to the OS
+Major System calls
++ pid = fork(): create a child process identical to the parent
++ pid = waitpid(pid, &statloc, options): wait for a child to terminate
++ s = execve(name, argv, enviornp): replace a process' core image
++ exit(status): terminate process execution and return status
++ fd = open(file, how, ...): open a file for reading, writing, or both
++ s = close(fd): close an open file
++ n = read(fd, buffer,nbytes): write data from a buffer to a file
++ position = lseek(fd, offset, whence): move the file pointer
++ s = stat(name, &buf): get a file's status information
++ s = mkdir(name, mode): create a new directory
++ s = rmdir(name): remove an empty directory
++ s = link(name1, name2): create a new entry, name2, pointing to name1
++ s = unlink(name): remove a directory entry
++ s = mount(special, name, flag): mount a file system
++ s = umount(special): unmount a file system
++ s = chdir(dirname): change the working directory
++ s = chmod(name, mode): change a file's protection bits
++ s = kill(pid, signal): send a signal to a process
++ seconds = time(&seconds): get the elapsed time since Jan 1st, 1970
+(s = -1 if an error occurs)
+
+windows has calls that roughly correlate to unix ones but I don't think we'll need to memorize them
+
 ## Threads
 ## Ipc
 ## Semaphore
