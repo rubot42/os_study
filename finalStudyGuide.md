@@ -134,6 +134,86 @@ Major System calls
 windows has calls that roughly correlate to unix ones but I don't think we'll need to memorize them
 
 ## Threads
+Comparison
+Processes for concurrency (bad)
++ not efficient (own PCB and OS resources & high overhead)
++ don't directly share memory (due to individual address space)
++ can contain multiple threads (multi-threading)
+Threads for concurrency (good)
++ 10-100x faster than processes
++ one program can access multiple CPUs or cores
++ allows overlap of I/O and computation
++ a process is a container for threads
+
+Multithreading
++ share same address space
++ share global variables
++ owner by a single user
++ no protection between threads
+
+POSIX Thread commands: Pthread_...
++ create: create a new thread
++ exit: terminate the calling thead
++ join: wait for a specific thread to exit
++ yeild: release the CPU to let another thread run
++ attr_init: create and initializa a thread's attribute structure
++ attr_destroy: remove a thread's attribute structure
+
+Thread Implementation (Kernel vs User Space)
+User Space
+Pros
++ can be implemented on a OS that does not support threads
++ thread switching is faster than kernel
++ thread scheduling is very fast (no context switching, no kernel trap, no flushing memory cache)
++ each process can have it's own scheduling algorithm
+Cons
++ blocking system calls (waiting for keyboard input)
++ page faults (partial loads of programs into memory)
++ threads need to voluntarily give up cpu
+Kernel Space
+Pros
++ no run time system needed in each process
++ no thread table in each process
++ blocking system calls not an issues
+Cons
++ if thread operations are common, much more kernel overhead
++ fork a multithreaded process?
++ signals sent to processes. Should the kernel assign it to a specific thread to handle?
++ slower than user space threads
+
+Hybrid implementations use both
+Pop-up threads: new threads created to handle incoming messages
+
+Process Control Block (PCB)
++ process state
++ process id
++ program counter (PC)
++ current cpu register (if not executing)
++ cpu scheduling info (ie: priority)
++ memory-management info
++ resources allocated to it
++ resources it needs
+
+Thread Control Blocks (TCB)
++ break the PCB into two pieces:
+  + Thread Specific: process state
+  + Process Specific: address space and os resources
++ smaller and cheaper than processes
++ threads in a process can execute different parts of the program code at the same time.
++ threads can execute the same parts of the code at the same time, but with different execution state
+
+Context Switching with TCB
+between two threads in the same process:
++ no need to change address space
+threads in different processes:
++ must change address space, sometimes invalidating cache (has to do with virtual memory)
+
+A thread is an independent sequential execution stream within a process.
+This is because it maitains its own:
++ stack pointer
++ registers
++ scheduling priority
+
 ## Ipc
 ## Semaphore
 ## Monitor
