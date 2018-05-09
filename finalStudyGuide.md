@@ -8,10 +8,10 @@ Process: an active program
 A process contains:
 1. an executable program
 2. associated data needed by the program
-   + program counter (PC)
-   + data segment
-   + text segment
-   + stack pointer (SP)
++ program counter (PC)
++ data segment
++ text segment
++ stack pointer (SP)
 3. Execution context of the program
 
 Using multiple processes increases CPU utilization and reduces latency
@@ -25,14 +25,14 @@ Heap
 
 "A process's view of the world"
 + multiple processes can run at the same time
-  + each process owns its own image of the program
-  + address space (memory) the program can use
++ each process owns its own image of the program
++ address space (memory) the program can use
 + state (registers, including PC & SP)
 + address space and memory protection
-  + each process has its own exclusive address space
-  + physical memory is divided into user memory nad kernel memory
-  + (kernel memory can only be accessed in kernel mode)
-  
++ each process has its own exclusive address space
++ physical memory is divided into user memory nad kernel memory
++ (kernel memory can only be accessed in kernel mode)
+
 Reasons for Process Creation
 1. system initialization
 2. running process creates another process
@@ -94,13 +94,13 @@ Process Control Block
 + contains all the process info
 + stored in the Process Table
 + Parts:
-  + PID
-  + register values for the process (including PC and SP values)
-  + address space
-  + priority
-  + pointer to the next pcb
-  + I/O information
-  
++ PID
++ register values for the process (including PC and SP values)
++ address space
++ priority
++ pointer to the next pcb
++ I/O information
+
 Context Switch (changing running process)
 + saves and loads from PCB of respective process
 
@@ -196,8 +196,8 @@ Process Control Block (PCB)
 
 Thread Control Blocks (TCB)
 + break the PCB into two pieces:
-  + Thread Specific: process state
-  + Process Specific: address space and os resources
++ Thread Specific: process state
++ Process Specific: address space and os resources
 + smaller and cheaper than processes
 + threads in a process can execute different parts of the program code at the same time.
 + threads can execute the same parts of the code at the same time, but with different execution state
@@ -214,7 +214,89 @@ This is because it maitains its own:
 + registers
 + scheduling priority
 
-## Ipc
+## Ipc: Inter Process Communication
+Why IPC?
+Processes may need to share data:
++ Exchange Data between multiple processes
++ processes do not get in each other's way
++ maintain proper sequencing of actions in multiple processes
+
+Three IPC Approaches
+1. passing messages through the kernel
+2. sharing a region of physical memory
+3. asynchronous signals or alerts
+
+Race Conditions
++ two or more processes are reading or writing the shared data
++ result depends on the order
++ these are bad!
+
+Critical Section
++ part of the program where the shared memory is accessed
++ read/write of data in these sections can lead to errors and race conditions
+
+Requirements to avoid race conditions (same as mutex properties)
+1. no two processes may be simultaneously inside their critical regions
+2. no assumptions may be made about speeds or the number of cpus
+3. no process running outside its critical region may block other processes
+4. no process should have to wait forever to enter its critical region
+
+Mutual Exclusion: only one thread can be in critical section at a time
+4 properties of mutex in a critical section:
+1. No 2 processes may be simultaneously inside their critical section
+(correctness)
+2. No process should have to wait indefinitely long to enter its critical section
+(liveness - freedom from starvation)
+3. No process stopped outside its critical section should block other processes
+4. No assumptions about relative speeds of processes or number of processes
+
+Mechanisms for Mutal Exclusion
+1. Software solution
+  + strict alternation
+  + Peterson's solution
+  + sleep and wakeup
+2. Hardware solution
+  + Interrupt disabling
+  + Test-and-Set lock (TSL)
+3. Higher level solutions
+  + mutex
+  + semaphores
+  + ...
+  
+Strict Alternation (Software 1):
++ Use a shared variable "Turn" to strictly alternate between processes
++ Waiting process continually reads "Turn" to see if it can proceed
++ "Spin-lock": lock wherein a process busy waits
++ Disadvantages
+  + horribly wasteful (process waiting to aquire locks spin on the CPU)
+  + if process 0 is faster than process 1, then process 0 will constantly get blocked
+    by waiting for process 1 to finish critical section
+  + only allows two processes
+  + violates condition 3 of mutual exclusion/race conditions
+  
+Peterson's Solution (Software 2):
++ like strict alternation but with a flag to show interest in entering the critical section
++ still for 2 processes
++ can be generalized to n processes, for n has to be a fixed number
+
+Sleep and Wakeup (Software 3):
++ uses buffer
++ sleeps or wakes up based on buffer
+
+Disabling Interrupts (Hardware solution 1):
++ right before the critical section, the process disables system interrupts
++ before leaving, it reenables them
++ the CPU cannot be switched to other processes when a process is in the critical section
++ doesn't allow for user input during critical section
++ system could lock up
+
+Locking Test-and-Set Lock (TSL) (Hardware Solution 2):
++ test and modify the content of a word atomically
++ the word here is the lock
++ TSL REGISTER,LOCK
++ function returns the current value of memory word lock, then set lock to be true
++ this is an atomic operation
+
 ## Semaphore
 ## Monitor
 ## Prelab
