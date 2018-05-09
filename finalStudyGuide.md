@@ -343,8 +343,19 @@ Pthread_cond_...
 + signal: signal another thread and wake it up
 + broadcast: signal multiple threads and wake all of them
 ## Monitor
+Monitor (they use condition variables)
+Rules
+1. only one process can be active in a monitor at any time
+2. processes cannot access internal data of monitor
+3. put all critical sections inside monitor
+Operations
++ Wait (&condVar): causes the calling process to block. Reacquire lock later, before calling.
++ Signal(&condVar): wake up one blocked process, if any
++ (Rule: must hold condition variable when doing condition variable operations!)
+
+
 ## Prelab
-## Pthred
+## Pthread
 ## Scheduling
 ## Deadlocks
 ## Memory
