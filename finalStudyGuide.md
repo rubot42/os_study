@@ -359,6 +359,78 @@ Dining Philosopher Problem (we should know this by now lol)
 ## Pthread
 commands are in prior notes
 ## Scheduling
+First Come, First Served
++ as stated. tasks are queued up
+
+Round Robin
++ does each task for a set amount of time denoted by q (quantum)
+
+Non-Preemptive
++ for each clock interrupt, running process keeps going
+
+Preemptive
++ for each clock interrupt, running process is suspended and switched with another (if any)
++ maximum or fixed time execution of processes (timeslice)
+
+
+Scheduling Criteria
+User-oriented
++ minimize response time (time from issuing request to get the first response )
++ minimize turaround time (time btween submission and termination
++ maximize throughput (# of jobs completed per unit time)
++ freedom from startvation
++ fairness
+System-oriented
++ maximize cpu utilization (keep the cpu busy)
++ minimize overhead (keep the cpu doing useful stuff, not context switching)
+
+Batch System
++ off-line, jobs come with resource estimates
++ assumption: know how much time is needed to complete the job ahead of time
++ scheduling goals: throughput, turnaround time, cpu utilization
++ Algorithms: First come first served (FCFS), Shortest job first (SJF)
+
+Shortest-Job-First
++ non-preemptive: run shortest process after each completion
+  (reduces context switches)
++ preemptive: choose program with shortest time left after each completion or when a new process arrives
+  (optimal, gives minimal avg turnaround time)
+
+Scheduling in Interactive Systems
+Goals:
++ Response time and proportionality
+Algs:
++ round robin
++ priority
++ multiple queues
+
+Round Robin
++ allowed to run a set amount of time (quantum)
++ solution to fairness and starvation
++ fair allocation of cpu across jobs
++ low average waiting time when job lengths vary
++ good for respoonsiveness if small number of jobs
++ typically, higher avg turnaround than SJF but better response times
+
+Priority Scheduling
+Plan:
++ always execute highest-priority runnable jobs to completion
++ each queue can be processed with RR with some quantum
+Problems:
++ starvation
++ deadlock: Priority inversion (happens when low priority task has lock needed by high-priority task)
+
+Ways to assign priorities:
+Statically based on process type
++ Priority = 1/f
++ f = size of quantum last used
++ the longer a process ran, the lower its priority
++ the process that runs the shortest gets the highest priority to run next
+Lottery Scheduling
+give tickets and pick a random one
+you can assign tickets based on size
+give each process at least one ticket to avoid starvation
+behaves gracefully as load changes
 ## Deadlocks
 ## Memory
 ## Page replacement
@@ -375,3 +447,5 @@ Virtual Memory
 File Systems
 
 # Midterm
+
+# Equations/Calculations
