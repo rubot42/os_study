@@ -298,6 +298,50 @@ Locking Test-and-Set Lock (TSL) (Hardware Solution 2):
 + this is an atomic operation
 
 ## Semaphore
+Disadvantages to prior "solutions":
++ they require busy wait (continually testing a variable until some value appears)
++ wastes cpu time
++ low priority job blocks high priority ones
+
+Improvement
++ instead of blocking with busy wait, sleep instead
++ sleep(): caller gives up cpu for a duration until it is woken up
++ wakeup(): caller wakes up a sleeping process
++ still need to have mutual exclusion with this
+
+Semaphores
+purpose: count the number of wakeups saved to solve the lost wakeup problem
+How:
++ define a count variable (a semaphore)
++ semaphore is initialized to zero
++ down/--: use one saved wakeup
++ up/++: save a wakeup
++ up and down are atomic
++ semaphores can't be negative
++ can't read or write to semaphore except initial set, as well as up/down
+
+Types of Semaphores
++ Counting: any non-negative num
++ Binary/Mutex: only 1 or 0
+
+How do processes share lock variables, semaphores, or a common buffer?
++ stored in the kernel and only accessed via system calls
+  or
++ modern Oss offer a way for processes to share a portion of their address space with other processes
+
+Mutexes in Pthreads:
+Pthread_mutex_....
++ init: create a mutex
++ destroy: destory an existing mutex
++ lock: aqurire a lock or block
++ trylock: aquire a lock or fail
++ unlock: release a lock
+Pthread_cond_...
++ init: create a condition variable
++ destroy: destroy a condition variable
++ wait: block waiting for a signal
++ signal: signal another thread and wake it up
++ broadcast: signal multiple threads and wake all of them
 ## Monitor
 ## Prelab
 ## Pthred
