@@ -355,7 +355,9 @@ Operations
 
 
 ## Prelab
+Dining Philosopher Problem (we should know this by now lol)
 ## Pthread
+commands are in prior notes
 ## Scheduling
 ## Deadlocks
 ## Memory
