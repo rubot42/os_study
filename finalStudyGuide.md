@@ -432,7 +432,159 @@ you can assign tickets based on size
 give each process at least one ticket to avoid starvation
 behaves gracefully as load changes
 ## Deadlocks
+Types of resources (objects granted to the processes)
++ Preemptable: can be taken away from a process with no ill effects (ie: memory)
++ Nonpreemptable resources: will cause the process to fail if taken away
+
+Deadlocks are caused by each process needing what another process has.
+
+Dining lawyer/philosopher example
+
+In a deadlock, no processes can run, release resources, or be awakened
+
+Conditions for resource deadlocks (all 4 must be present)
+1. mutual exclusion
+2. hold and wait
+3. no preemption
+4. circular wait
+
+Starvation vs Deadlocks
++ starvation: thread waits indefinitely
++ deadlock: circular waiting for resources
++ deadlock is a type of starvation but not all starvation is deadlock
+
+Dealing with Deadlocks
+Allow it to happen
++ ostrich alg. (ignore it)
++ detection and recovery (allow it, detect it, fix it)
+Ensure it doesn't happpen
++ prevention (negate one of the 4 nessesary conditions)
++ dynamic avoidance (careful resource allocation. analysis on request to see if it will cause an issue)
+
+Resource allocation graphs and how to detect if there are issues.
+
+Detecting Deadlocks (single type of resources)
++ use resource graph
++ perform depth first search at each node looking for cycles/recurring nodes
+
+Recovering from Deadlocks
+Preemption: take a resource from some other process (depends on nature of resource)
+Rollback: checkpoint a process periodically, use save state and restart deadlocked process
+Kill the process: self explanitory
+
+Detecting deadlocks (multiple types of resources)
+compare vectors with alg:
+vectors and matrices:
++ resources in existence
++ resources available
++ current allocation matrix
++ request matrix
+Alg:
+1. look for an unmarked process, Pi for which R[i] (ith row of R) <= A
+   (Pi's request can be granted with available resources)
+2. if such a process is found, A = A + C[i], mark the process and go back to step 1
+   (Pi releases resources)
+2. if no such process exists, the alg is done
+
+Results:
++ alg outputs a sequence of processes = good
++ else = deadlock
+
+
+Preventing deadlock by attacking conditions
+1. Mutual Exclusion
+   Allow resources to be shared
+   (spooling)
+2. Hold and Wait
+   Prevent processes that hold resources from waiting for more
+   (request everything initially)
+3. No preemption
+   If a process is holding some resources and request another that is no available, it releases all.
+   Applied to resources whose state can easily be saved and restored later
+   (take resources away)
+4. Circular Wait
+   all requests of a process must be done in numerical order
+   (order resources numerically)
+
+Resource allocation graph
+
+safe state   => no deadlocks
+unsafe state => possibility of deadlocks
+avoidance    => ensure that a system will never reach an unsafe state
 ## Memory
+Goals of memory management
++ convenient abstract for programming
++ provide isolation between different processes
++ allocate scarce physical memory resources across processes
+
+
+Address Space: the set of addresses that a process can use to address memory
+Base and limit registers can be used to give each process a seperate address space.
+
+Memory Holes: block of available memory.
+Fragmentation: space exists in memory but hole is not continuous
+
+Paging:
++ solves the external fragmentation by using fixed-size chunks of virtual and physical memory
++ virtual memory unit is called a "page"
++ physical memory unit is called a "frame"/"page frame"
++ Pages and page frames are the same size (a power of 2)
++ Virtual memomory is a sequence of pages
++ physical memomory is a sequence of page frames
++ the program believes it has a single continous block but the actual scattered memory is hidden by the
+  mapping of virtual to physical memory
++ programs do not control mapping
+
+Address Translation
++ any page can be translated to any page frame
++ this is doene by MMU
++ virtual address has 2 parts: virtual page number & offset
++ mapping from page to frame provided by the page table
++ number of entries in page table = number of virtual pages
++ one page table per process (located in memory)
+
+Page Table Entry (PTE)
++ page frame # - physical frame where virtual page is loaded
++ present/absent bit - is the page loaded into main memory
++ Protection - read/write/exec access
++ "dirty bit" -  has it been modified (if so needs to write back to disk when swapped out)
++ referenced - set when page is accessed (used in page replacement algs)
++ disable caching - if set do not use cached copy
+  (may be set if page is mapped to an i/o device and will change often (memory-mapped i/o))
+
+Size Facts
+
+A n-bit virtual address space
++ the virtual address consists of n bits
++ there are 2^n virtual addresses
+
+A n-bit virtual address space with k bits for offset
+each page consists of 2^k virtual addresses
+teh virtual page number takes (n-k) bits
+there are 2^(n-k) virtual pages
+there are 2^(n-k) entries in the page table
+
+The same is true for physical address spaces
+
+Translation Lookaside Buffer (TLB)
++ is part of the MMU
++ is very small and fast
++ caches most recent virtual to physical address translations
+
+Multi-level page tables: page the page tables
+Inverted Page Table: page frame -> virtual frame rather than the other way around
+Hash table in inverted page tables: better version of inverted page table, better performance
+
+Summary of page table and alternatives:
+the standard:
++ page table
+solution for faster access:
++ translation lookaside buffer (TLB): reduces thenumber of memory references to get page table entry
+solution to minimizing size of page tables:
++ multi-level page table
++ inverted page table
++ hashed page table
+
 ## Page replacement
 ## Filesystems
 ## IO
@@ -448,4 +600,11 @@ File Systems
 
 # Midterm
 
-# Equations/Calculations
+# Equations/Calculations/Other stuff
+cpu utilization
+Deadlock stuff:
++ deadlock picture diagrams
++ deadlock detection matrix stuff
++ resource allocation graph
++ bankers algorithm
+Memory Diagrams/Drawings
