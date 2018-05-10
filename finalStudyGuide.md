@@ -586,7 +586,122 @@ solution to minimizing size of page tables:
 + hashed page table
 
 ## Page replacement
+Swapping: refers to moving the memory for an entire process out to disk
+Paging: refers to moving individual pages out to disk (and back)
+If a reference to a page is not in memory, there is a page fault
+
+page fault rate p: 0 <= p <= 1
+p=0 no faults, p=1 always faults
+effective access time (EAT):
+EAT = (1-p) x memory access + p x overheads
+overheads = page fault overhead + swap page out ... + swap page in ... + restart ...
+
+Algorithms
+
+Optimal
++ if the OS can tell the futurem you can replace the page that will be used furthest in the future
++ obviously not viable
+
+First In First Out (Fifo)
++ maintain a linked list of all pages (in the order they came into memory)
++ page at the beginning of list is replaced
++ advantages:
+  + simple to implement
++ disadvantages:
+  + pages in memory the longest may be replaced often
+  + suffers from "Belady's Anomoly" (more memory might increase fault rate)
+
+Second Chance (FIFO varient)
++ when free page frames are needed, examine in fifo order
++ consider reference bit R (read or written to)
++ if R = 0 replace
++ if R = 1 set R = 0 and place at the end of FIFO
++ if no replaces go back to beginning of list and use pure fifo
++ moving pages around is inefficient though
+
+Clock (FIFO varient)
++ fixes inefficiency of 2nd chance
++ similar but with circular buffer and a frame pointer
+
+
+Least Recently Used (LRU)
++ replace file used least recently
++ stack solution
+  + keep a stack of page numbers in a double link form
+  + most recently used at front, least at rear
+  + always remove page from rear
+  + referenced page is moved to front
+  + (this is time consuming though)
++ counter implementation
+  + equip hardware with 64 bit counter
+  + increment counter at each instruction
+  + every page table entry has a field to save the entry when referenced
+  + replace page with lowest value (oldest)
++ matrix method  (doesn't really matter)
++ not frequently used
+  + add r bit to software counter value
+  + evict lowest value
++ aging (NRU)
+  + shift counter to the right >>
+  + add R to leftmost bit
+  + replace lowest counter
+
+Demand Paging
+Pre-paging:
+needs working set (a set of pages the process is currently using) to preload
+
+
+
 ## Filesystems
+file operators
++ create
++ delete
++ open
++ close
++ read
++ write
++ append
++ seek
++ get attributes
++ set attributes
++ rename
+
+directory operations
++ create
++ delete
++ opendir
++ closedir
++ readdir
++ rename
++ link
++ unlink
+
+Allocation methods
+contiguous
++ each file occupies a set of contiguous blocks on the disk
++ pros: simple, only starting location and length are required
++ cons: wasteful of space, external fragmentation, file cannot grow
+linked
++ each file is a linked list of disk blocks
++ blocks may be scattered anywhere on the disk
++ block has data and pointer to next block
++ pros: simple, only need starting address, free space management
++ cons: no efficient random access
+FAT (file allocation table)
++ varient of linked list allocation
++ each fat entry corresponds to disk block number
++ each fat entry oncatins a pointer to the next block or 0
+indexed
++ brings all pointers together into the index block/i-node
++ pros: efficient random access, dynamic access without fragmentation, overhead better than FAT
++ cons: what if the i-node isn't big enough for all pointers
+
+Directories are special kinds of files that contain a list of (filename, inode number) pairs
+root directory is inode 0 or 1 (it's special)
+
+
+
+
 ## IO
 ## Disks
 
