@@ -699,12 +699,76 @@ indexed
 Directories are special kinds of files that contain a list of (filename, inode number) pairs
 root directory is inode 0 or 1 (it's special)
 
-
+Hard link: makes both paths refer to the same file on disk
 
 
 ## IO
-## Disks
 
+Block devices: store info in fixed size blocks
+transfers are in units of entire blocks
+
+character devices: deliver or accepts stream of characters without regard to block structure
+
+port: connection point fo rdevice
+Bus: pci and expansion(old and slow)
+controller (host adapter) - electronicsthat operate port, bus, device
+
+Registers
++ a  controller has two registers:
++ control: written to, causes device action
++ status: read from, gets states of device
++ controller may also have data buffers that the CPU can read/write to 
+
+Programmed IO
++ CPU has to write/read one byte at a time between main memeory and device
++ cpu makes a request and then waits for the device to become ready
++ buses are only 32-64 bits wide so the process repeats
++ this takes a lot of CPU time, very slow
+
+Memory Mapped IO
++ map all the control registers into the memory space
++ each control register is assigned a unique memory address
++ this address is usually at the top of the address space
++ the address space is divided into 2 parts: memory and io
++ advantages:
+  + program can write to io buffers in the same way as any other memory location
+  + protection of io buffers in same manner as protected memory
+  + reading control registers is the same as any other mem location
++ disadvantages:
+  + need to disable caching to mem mapped io
+  + for one address space, memory modules and io devices will examine all memory references
+
+Direct Memory Access
++ device read/wrote direectly from/to memory
++ it has access to the system bs independent of cpu
++ no software intervention needed
++ hardware enables data transfer to be accomplished without cpu
++ usually found on the motherboard
++ word-at-a-time mode: requests for transfer of word -> if cpu watns bus, wait
++ block mode: dma controller acquires bus and issues a series of transfers before releasing it
++ (adv: takes less time for acquiring bus)
++ (dis: can block the cpu for awhile)
++ usually woth it except for some cases (even thought the cpu is faster)
+
+Interrupt-Driven IO
++ external interrupts: devices
++ internal interrupts: exceptions/errors
++ interrupts handle unpredictability well but have high overhead
+
+
+## Disks
+Disk reliability
+sector errors
+can be fixed by the disk controller (after testing before being shipped)
+os: acquire a list of bad sectors and build remapping tables
+
+RAID (redundant array of independent disks)
+0 striping no redundancy
+1 redundancy no striping (mirrors)
+2 striped so each sequential bit is on a different drive (can correct one error)
+3 parity codes stored on check disk used to restore data
+4 large strips witha  parity strip like raid 3. parity disk can bottleneck
+5 interleaved check blocks to avoid bottle next and alow read and writes to occur in parallel
 
 # Quizzes
 Fork
